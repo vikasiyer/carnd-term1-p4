@@ -24,6 +24,7 @@ The goals / steps of this project are the following:
 [image5]: ./documentationImages/peaks.png "Fit Visual"
 [image7]: ./documentationImages/slidingWindow.png "Output"
 [image6]: ./documentationImages/output280.jpg "Output"
+[image8]: ./documentationImages/outputShadow.jpg "Shadow Area"
 [video1]: ./project_video_out.mp4 "Video"
 
 ## [Rubric](https://review.udacity.com/#!/rubrics/571/view) Points
@@ -135,3 +136,11 @@ I had trouble getting the right mix of thresholding, but followed the lessons re
 I also lost plenty of time understanding how np.dstack works. The lack of understanding caused some delays as the dstacks would have an image dimension of 9 instead of 3 which would not make the code from the lessons work as-is. Reading through the Udacity forums helped resolve some of the issues.
 
 I also have some difficulty in fitting lines in a couple of spots in the video frame, especially the one where there are shadows. I hope to improve this in future by experimenting with some more thresholding values using different color schemes.
+
+*Edit: Submission 2*
+
+Based on the reviewer's recommendation, I made some changes to the thresholding. I used the code suggested by the reviewer to add debug frames to my video to see how lane detection looks like in areas with wobbling. For the first wobble, thresholding addition of H and L values helped solving the problem.
+
+For the shadow patch area, I plotted the sliding window and found that the lane detections found plenty of points in a box and no detections otherwise. I tried making several changes to thresholding in the HLS space. While the wobbling reduced, the green lane detection would still squeeze a bit. Thresholding couldn't make any further improvements. Based on the reviewer's suggestions and the debug plots (see image below), I noticed that the lane width goes too small in the shadow patch. So if I detect a shadow (i.e  "if len(good_right_inds) > 3500" in the slidingWindow method), I look for a wider lane width to record lane detections and ignore every other lane detections. This helped reduce false positives, and helped smoothen the lane detection. 
+
+![alt text][image8]
