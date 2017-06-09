@@ -140,7 +140,23 @@ I also have some difficulty in fitting lines in a couple of spots in the video f
 *Edit: Submission 2*
 
 Based on the reviewer's recommendation, I made some changes to the thresholding. I used the code suggested by the reviewer to add debug frames to my video to see how lane detection looks like in areas with wobbling. For the first wobble, thresholding addition of H and L values helped solving the problem.
+```python
+s_binary[(h_channel >= 225 )& (h_channel <= 255 )] = 1
+s_binary[(l_channel >= 200) & (l_channel <= 255)] = 1
 
-For the shadow patch area, I plotted the sliding window and found that the lane detections found plenty of points in a box and no detections otherwise. I tried making several changes to thresholding in the HLS space. While the wobbling reduced, the green lane detection would still squeeze a bit. Thresholding couldn't make any further improvements. Based on the reviewer's suggestions and the debug plots (see image below), I noticed that the lane width goes too small in the shadow patch. So if I detect a shadow (i.e  "if len(good_right_inds) > 3500" in the slidingWindow method), I look for a wider lane width to record lane detections and ignore every other lane detections. This helped reduce false positives, and helped smoothen the lane detection. 
+```
+
+
+For the shadow patch area, I plotted the sliding window and found that the lane detections found plenty of points in a box and no detections otherwise. I tried making several changes to thresholding in the HLS space. While the wobbling reduced, the green lane detection would still squeeze a bit. Thresholding couldn't make any further improvements. Based on the reviewer's suggestions and the debug plots (see image below), I noticed that the lane width goes too small in the shadow patch. So if I detect a shadow (i.e  "if len(good_right_inds) > 3500" in the slidingWindow method), I look for a wider lane width to record lane detections and ignore every other lane detections. This helped reduce false positives, and helped smoothen the lane detection.
+
+```python
+if len(good_right_inds) > 3500:
+  shadowDetected = True
+
+```
 
 ![alt text][image8]
+
+One minor glitch I found in the lane detection is: At the start of the frame, the left lane detection is slightly more tilted but almost fits and it quickly stabilizes within a frame. And then the detection is good throughout. Improving this could be a good step in future.
+
+Overall, I found the project to be quite challenging as it involved tuning several parameters and making manipulations to avoid false positives. 
